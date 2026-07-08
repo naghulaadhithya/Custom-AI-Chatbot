@@ -89,14 +89,18 @@ streamlit run chatbot_web_app.py
 - Home Screen
 <img width="1600" height="723" alt="image" src="https://github.com/user-attachments/assets/669edd07-7f30-49f8-9614-3e88bcfb2e84" />
 
+
+
 - Chat Interface
   <img width="1600" height="897" alt="image" src="https://github.com/user-attachments/assets/362b382f-4969-4617-82eb-fcd9ecd185fb" />
+
 
   
 - File Upload
 <img width="1600" height="726" alt="image" src="https://github.com/user-attachments/assets/3f17c580-251c-4cbf-8edf-6858625ead80" />
 
-  
+
+
 - Chat History
 <img width="1919" height="868" alt="image" src="https://github.com/user-attachments/assets/0dd9850e-465b-4e1e-8a21-3176ca3b226f" />
 
