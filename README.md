@@ -1,27 +1,32 @@
 # 🤖 Custom AI Chatbot with Memory
 
-A modern AI-powered chatbot built using **Python**, **Streamlit**, **Groq API**, and **Meta's Llama 3.3 70B** model. This chatbot provides intelligent, context-aware conversations with session-based memory and document upload support.
+A modern AI-powered chatbot built using **Python**, **Streamlit**, **Groq API**, and **Meta Llama 3.3 70B**. The chatbot provides intelligent, context-aware conversations with user authentication, persistent chat history, document upload support, and a modern responsive UI.
 
 This project was developed as **Project 1** during my **Generative AI Internship at Decode Labs**.
 
 ---
 
-## 🚀 Features
+# 🚀 Features
 
-- 🧠 Session-based conversation memory
-- 💬 Context-aware AI conversations
-- 📄 Upload and analyze PDF, TXT, and DOCX files
-- 🔄 Regenerate AI responses
-- 📜 Chat history management
-- 🧹 Clear chat functionality
-- 📥 Download chat as TXT
-- ⚡ Fast AI responses using Groq API
-- 🎨 Modern dark-themed responsive UI
-- 📊 Session statistics dashboard
+- 🔐 User Login & Registration System
+- 👤 Secure Password Authentication (bcrypt)
+- 🧠 Conversation Memory
+- 💬 Context-Aware AI Conversations
+- ⚡ Powered by Groq API (Llama 3.3 70B)
+- 📄 Upload and Analyze PDF, TXT & DOCX Files
+- 📂 Persistent Chat History (Stored as JSON)
+- 📜 Previous Chat Sessions
+- 🔄 Regenerate AI Responses
+- 📋 Copy AI Responses
+- 📥 Download Chat as TXT
+- 🧹 Clear All Chats
+- 📊 Session Statistics Dashboard
+- 🎨 Modern Dark-Themed Responsive UI
+- ⚙️ Sidebar Chat Management
 
 ---
 
-## 🛠️ Tech Stack
+# 🛠️ Tech Stack
 
 - Python
 - Streamlit
@@ -32,26 +37,35 @@ This project was developed as **Project 1** during my **Generative AI Internship
 - CSS
 - PyMuPDF
 - python-docx
+- bcrypt
+- JSON
+- Pillow (PIL)
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
-```
+```text
 Custom-AI-Chatbot/
 │
 ├── chatbot_web_app.py
 ├── requirements.txt
 ├── README.md
-└── assets/
-    └── screenshots/
+├── users.json
+├── chat_history/
+│
+├── assets/
+│   ├── login_robot.png
+│   └── screenshots/
+│
+└── .streamlit/
 ```
 
 ---
 
-## ⚙️ Installation
+# ⚙️ Installation
 
-### Clone the repository
+## Clone the Repository
 
 ```bash
 git clone https://github.com/your-username/custom-ai-chatbot.git
@@ -59,23 +73,23 @@ git clone https://github.com/your-username/custom-ai-chatbot.git
 cd custom-ai-chatbot
 ```
 
-### Install dependencies
+## Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Add your Groq API Key
+## Add Your Groq API Key
 
-Replace the API key in:
+Replace the API key inside:
 
 ```python
 API_KEY = "YOUR_GROQ_API_KEY"
 ```
 
-or store it securely using Streamlit Secrets.
+or store it securely using **Streamlit Secrets**.
 
-### Run the application
+## Run the Application
 
 ```bash
 streamlit run chatbot_web_app.py
@@ -83,60 +97,111 @@ streamlit run chatbot_web_app.py
 
 ---
 
-## 📸 Screenshots
+# 📸 Screenshots
 
-> Add screenshots of your application here.
-- Home Screen
-<img width="1600" height="723" alt="image" src="https://github.com/user-attachments/assets/669edd07-7f30-49f8-9614-3e88bcfb2e84" />
+### 🏠 Login Screen
 
-
-
-- Chat Interface
-  <img width="1600" height="897" alt="image" src="https://github.com/user-attachments/assets/362b382f-4969-4617-82eb-fcd9ecd185fb" />
-
-
-  
-- File Upload
-<img width="1600" height="726" alt="image" src="https://github.com/user-attachments/assets/3f17c580-251c-4cbf-8edf-6858625ead80" />
-
-
-
-- Chat History
-<img width="1919" height="868" alt="image" src="https://github.com/user-attachments/assets/0dd9850e-465b-4e1e-8a21-3176ca3b226f" />
-
+(Add Screenshot)
 
 ---
 
-## 📖 How It Works
+### 💬 Chat Interface
 
-1. Enter your question in the chat input.
-2. Optionally upload a PDF, TXT, or DOCX document.
-3. The chatbot extracts the document text.
-4. The uploaded content is sent as context to the AI model.
-5. The chatbot generates intelligent responses while maintaining conversation history during the session.
+(Add Screenshot)
 
 ---
 
-## 🎯 Learning Outcomes
+### 📄 File Upload
+
+(Add Screenshot)
+
+---
+
+### 📜 Chat History
+
+(Add Screenshot)
+
+---
+
+# 📖 How It Works
+
+1. Create an account or log in.
+2. Start a new conversation.
+3. Ask any question.
+4. Optionally upload a PDF, TXT, or DOCX file.
+5. The chatbot extracts text from the uploaded document.
+6. The extracted content is added as context for the AI model.
+7. Groq API generates an intelligent response.
+8. Conversations are stored automatically for each user.
+9. Users can download or manage their chat history.
+
+---
+
+# 🎯 Learning Outcomes
 
 Through this project, I gained practical experience in:
 
 - Generative AI Application Development
 - Large Language Model (LLM) Integration
-- API Integration using Official SDKs
-- Session State Management
 - Prompt Engineering
-- Streamlit Web Development
+- API Integration using Official SDKs
+- Authentication System Development
+- Password Hashing with bcrypt
+- Session State Management
+- Persistent Chat History Management
 - File Processing
+- Streamlit Web Development
 - UI/UX Design
+- Responsive Interface Development
 
 ---
 
-## Acknowledgements
+# 🔒 Security Features
+
+- Passwords are encrypted using **bcrypt**
+- User-specific chat history
+- Secure login and registration
+- Session-based authentication
+
+---
+
+# 📁 Chat History Storage
+
+Each user's conversations are stored locally in JSON format.
+
+Example:
+
+```text
+chat_history/
+    username/
+        conversation_1.json
+        conversation_2.json
+```
+
+---
+
+# 🔮 Future Improvements
+
+- 🌙 Dark / Light Theme Toggle
+- 🎙️ Voice Input
+- 🔊 Text-to-Speech Responses
+- 🌐 Multi-language Support
+- ☁️ Cloud Database Integration
+- 📱 Mobile Responsive Improvements
+- 📤 Export Chat as PDF
+- 🔍 Chat Search
+- 🤖 Multiple AI Model Selection
+
+---
+
+# 🤝 Acknowledgements
 
 This project was developed as **Project 1** during my **Generative AI Internship at Decode Labs**.
 
-Special thanks to Decode Labs for providing practical exposure to Generative AI application development through hands-on projects.
+Special thanks to **Decode Labs** for providing practical exposure to Generative AI application development through hands-on projects.
 
 ---
 
+# 📜 License
+
+This project is intended for educational and portfolio purposes.
