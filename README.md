@@ -101,25 +101,29 @@ streamlit run chatbot_web_app.py
 
 ### 🏠 Login Screen
 
-(Add Screenshot)
+<img width="1919" height="867" alt="image" src="https://github.com/user-attachments/assets/50451132-6e46-4e1b-a744-7226b0e8e057" />
+
 
 ---
 
 ### 💬 Chat Interface
 
-(Add Screenshot)
+<img width="1919" height="873" alt="image" src="https://github.com/user-attachments/assets/dbc5a471-7c09-4c58-a203-bcf1f35bd415" />
+
 
 ---
 
 ### 📄 File Upload
 
-(Add Screenshot)
+<img width="1919" height="868" alt="image" src="https://github.com/user-attachments/assets/8ed79e9b-ba81-4b82-b9a6-084274ecbb0b" />
+
 
 ---
 
 ### 📜 Chat History
 
-(Add Screenshot)
+<img width="1919" height="876" alt="image" src="https://github.com/user-attachments/assets/ed59beef-3c3c-4cdf-a1d5-7c25526fdbe7" />
+
 
 ---
 
