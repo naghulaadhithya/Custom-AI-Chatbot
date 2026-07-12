@@ -13,19 +13,87 @@ from copy import deepcopy
 import pyperclip
 import fitz
 from docx import Document
+import json
+import bcrypt
+import os
+from PIL import Image
+
+
+USERS_FILE = "users.json"
+
+
+def load_users():
+    if not os.path.exists(USERS_FILE):
+        with open(USERS_FILE, "w") as f:
+            json.dump({}, f)
+
+    with open(USERS_FILE, "r") as f:
+        return json.load(f)
+
+
+def save_users(users):
+    with open(USERS_FILE, "w") as f:
+        json.dump(users, f, indent=4)
+
+CHAT_FOLDER = "chat_history"
+
+os.makedirs(CHAT_FOLDER, exist_ok=True)
+
+
+def load_chat(username):
+    file_path = os.path.join(CHAT_FOLDER, f"{username}.json")
+
+    if os.path.exists(file_path):
+        with open(file_path, "r") as f:
+            return json.load(f)
+
+    return []
+
+
+def save_chat(username, history):
+
+    # Create a folder for each user
+    user_folder = os.path.join(CHAT_FOLDER, username)
+    os.makedirs(user_folder, exist_ok=True)
+
+    # Create a new file only once per conversation
+    if st.session_state.chat_file == "":
+        filename = datetime.now().strftime("%Y%m%d_%H%M%S") + ".json"
+        st.session_state.chat_file = os.path.join(user_folder, filename)
+
+    with open(st.session_state.chat_file, "w") as f:
+        json.dump(history, f, indent=4)
+
+
 
 # STEP 1: Put your Groq API key here
-API_KEY = "YOUR_GROQ_API_KEY"
+API_KEY = "Enter Groq API key here"
 
 client = Groq(api_key=API_KEY)
+
+
+
 
 # STEP 2: Page setup
 st.set_page_config(
     page_title="Custom AI Chatbot",
     page_icon="🤖",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
+st.markdown("""
+<style>
+
+.block-container{
+    padding-top:1rem;
+    padding-left:2rem;
+    padding-right:2rem;
+    padding-bottom:1rem;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
 
 # STEP 3: Initialize session state
 if "conversation_history" not in st.session_state:
@@ -36,6 +104,134 @@ if "message_count" not in st.session_state:
     st.session_state.message_count = 0
 if "last_user_prompt" not in st.session_state:
     st.session_state.last_user_prompt = ""
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if "username" not in st.session_state:
+    st.session_state.username = ""
+
+if "page" not in st.session_state:
+    st.session_state.page = "login"
+if "chat_file" not in st.session_state:
+    st.session_state.chat_file = ""
+
+
+# ---------------- LOGIN CHECK ----------------
+
+if not st.session_state.logged_in:
+
+    users = load_users()
+
+    if st.session_state.page == "login":
+
+        left, right = st.columns([0.5, 0.5], gap="small")
+
+        # ---------- LEFT SIDE (IMAGE) ----------
+        with left:
+            image = Image.open("assets/login_robot.png")
+            st.image(image, use_container_width=True)
+
+        # ---------- RIGHT SIDE (LOGIN FORM) ----------
+        with right:
+
+            st.title("🤖 Custom AI Chatbot")
+            st.subheader("Login")
+
+            username = st.text_input("Username")
+
+            password = st.text_input(
+                "Password",
+                type="password"
+            )
+
+            if st.button("🔑 Login", use_container_width=True):
+
+                if username in users:
+
+                    stored_password = users[username]["password"].encode()
+
+                    if bcrypt.checkpw(password.encode(), stored_password):
+
+                        st.session_state.logged_in = True
+                        st.session_state.username = username
+
+                        # Start with a fresh chat
+                        st.session_state.conversation_history = []
+                        st.session_state.chat_file = "" 
+
+                        st.session_state.message_count = len(
+                            [m for m in st.session_state.conversation_history
+                             if m["role"] == "assistant"]
+                        )
+
+                        st.success("Login Successful!")
+                        st.rerun()
+
+                    else:
+                        st.error("Incorrect Password")
+
+                else:
+                    st.error("User does not exist")
+
+            st.write("Don't have an account?")
+
+            if st.button("Create Account", use_container_width=True):
+                st.session_state.page = "register"
+                st.rerun()
+
+    else:
+
+        st.title("🤖 Custom AI Chatbot")
+        st.subheader("Create Account")
+
+        new_username = st.text_input("Choose Username")
+
+        new_password = st.text_input(
+            "Choose Password",
+            type="password"
+        )
+
+        confirm_password = st.text_input(
+            "Confirm Password",
+            type="password"
+        )
+
+        if st.button("Create Account", use_container_width=True):
+
+            if new_username in users:
+
+                st.error("Username already exists")
+
+            elif new_password != confirm_password:
+
+                st.error("Passwords do not match")
+
+            else:
+
+                hashed = bcrypt.hashpw(
+                    new_password.encode(),
+                    bcrypt.gensalt()
+                ).decode()
+
+                users[new_username] = {
+                    "password": hashed
+                }
+
+                save_users(users)
+
+                st.success("Account Created Successfully!")
+
+                st.session_state.page = "login"
+                st.rerun()
+
+        st.write("Already have an account?")
+
+        if st.button("Back to Login", use_container_width=True):
+            st.session_state.page = "login"
+            st.rerun()
+
+    st.stop()
 
 # STEP 4: Beautiful Blue CSS
 st.markdown("""
@@ -321,6 +517,10 @@ st.markdown("""
 # STEP 5: Sidebar
 with st.sidebar:
     st.markdown("### 🤖 Custom AI Chatbot")
+    
+    st.markdown(f"""
+    ### 👋 Welcome, **{st.session_state.username}**
+    """)
 
     st.markdown("---")
 
@@ -333,6 +533,7 @@ with st.sidebar:
         })
         st.session_state.conversation_history = []
         st.session_state.message_count = 0
+        st.session_state.chat_file = ""
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -382,8 +583,6 @@ with st.sidebar:
 
     st.markdown("---")
 
-    st.markdown("---")
-
     if st.button("🔄 Regenerate Response", use_container_width=True):
 
      if st.session_state.last_user_prompt != "":
@@ -415,12 +614,17 @@ with st.sidebar:
             "content": ai_reply,
             "time": datetime.now().strftime("%I:%M %p")
         })
+        def save_chat(username, history):
+          file_path = os.path.join(CHAT_FOLDER, f"{username}.json")
 
+          with open(file_path, "w") as f:
+            json.dump(history, f, indent=4)
+
+          print(f"Saved chat to: {file_path}")
         st.rerun()
 
     st.markdown("**📊 Session Stats**")
     st.markdown(f"""
-        <div class='stat-box'>💬 Messages: {st.session_state.message_count}</div>
         <div class='stat-box'>🧠 Memory: Active ✅</div>
         <div class='stat-box'>⚡ Llama 3.3 70B</div>
         <div class='stat-box'>🟢 Status: Online</div>
@@ -467,7 +671,24 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("<p style='color:#64748b; font-size:0.78em;'>💡 Memory is active during this session.</p>", unsafe_allow_html=True)
 
+    if st.button("🚪 Logout", use_container_width=True):
+
+        st.session_state.logged_in = False
+        st.session_state.username = ""
+        st.session_state.conversation_history = []
+        st.session_state.chat_file = ""
+        
+        st.session_state.conversation_history = []
+        st.session_state.chat_sessions = []
+        st.session_state.message_count = 0
+        st.session_state.last_user_prompt = ""
+
+        st.rerun()
+
+
+
 # STEP 6: Main header
+##st.success(f"👋 Welcome back, {st.session_state.username}!")
 st.markdown("""
     <div class='main-header'>
         <span class='main-title'>🤖 Custom AI Chatbot</span>
@@ -483,46 +704,40 @@ st.divider()
 
 if len(st.session_state.conversation_history) == 0:
 
-    st.markdown("""
-    <div style="
-        text-align:center;
-        padding:15px 0;
-    ">
+    st.markdown(f"""
+    <div style="text-align:center; padding:15px 0;">
 
-    <h2 style="
-        color:white;
-        margin-bottom:8px;
+    <h1 style="
+       color:white;
+       font-size:52px;
+       font-weight:bold;
+       margin-bottom:10px;
     ">
-    Welcome! How can I help you today?
-    </h2>
+       Welcome, {st.session_state.username.title()} 👋
+    </h1>
 
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("""
     <div style="
-        display:flex;
-        justify-content:center;
-        gap:25px;
-        flex-wrap:wrap;
-        color:#60a5fa;
-        font-size:17px;
-        font-weight:600;
-        margin-bottom:20px;
+       display:flex;
+       justify-content:center;
+       gap:25px;
+       flex-wrap:wrap;
+       color:#60a5fa;
+       font-size:17px;
+       font-weight:600;
+       margin-bottom:20px;
     ">
 
     <span>🧠 Memory</span>
-
     <span>⚡ Fast</span>
-
     <span>📄 File Upload</span>
-
     <span>💬 History</span>
 
     </div>
     """, unsafe_allow_html=True)
-
-    st.divider()
 
 # STEP 8: Display messages
 for message in st.session_state.conversation_history:
@@ -589,6 +804,10 @@ if user_input and user_input.strip() != "":
         "content": user_input,
         "time": current_time
     })
+    save_chat(
+       st.session_state.username,
+       st.session_state.conversation_history
+    )
 
     # AI Response
     with st.chat_message("assistant"):
@@ -638,5 +857,9 @@ Uploaded Document:
         "content": ai_reply,
         "time": datetime.now().strftime("%I:%M %p")
     })
+    save_chat(
+       st.session_state.username,
+       st.session_state.conversation_history
+    )
 
     st.session_state.message_count += 1
