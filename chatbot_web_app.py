@@ -129,7 +129,7 @@ if not st.session_state.logged_in:
 
         # ---------- LEFT SIDE (IMAGE) ----------
         with left:
-            image = Image.open("assets/login_robot.png")
+            image = Image.open("login_robot.png")
             st.image(image, use_container_width=True)
 
         # ---------- RIGHT SIDE (LOGIN FORM) ----------
