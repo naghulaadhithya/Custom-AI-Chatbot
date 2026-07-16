@@ -53,11 +53,7 @@ Custom-AI-Chatbot/
 ├── README.md
 ├── users.json
 ├── chat_history/
-│
-├── assets/
-│   ├── login_robot.png
-│   └── screenshots/
-│
+├── asselogin_robot.png
 └── .streamlit/
 ```
 
